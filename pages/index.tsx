@@ -1,115 +1,52 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import { useRouter } from "next/router";
+import { useSession, signOut } from "next-auth/react";
+import Link from "next/link";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const categories = [
+  "🐻 동물", "🗺️ 모험", "🤝 우정", "📚 교훈", "👨‍👩‍👧 가족", "🧚 판타지",
+  "🦁 용기", "🌿 환경", "🧪 과학", "🪄 마법", "💖 사랑", "⏳ 시간 여행"
+];
 
 export default function Home() {
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  // ✅ 이모지를 제거하고 category만 전달
+  const handleCategoryClick = (category: string) => {
+    const pureCategory = category.replace(/^[^\s]+\s/, ""); // 이모지 제거
+    router.push(`/story?category=${encodeURIComponent(pureCategory)}`);
+  };
+
   return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              pages/index.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="min-h-screen bg-gradient-to-br from-[#fff1e6] via-[#fffbea] to-[#fde2ff] text-gray-800 font-gowun px-6 py-10">
+      <div className="flex justify-end gap-4 mb-6 text-sm">
+        {session ? (
+          <>
+            <span>{session.user?.name || session.user?.email} 님</span>
+            <Link href="/mypage" className="text-blue-700 font-semibold">마이페이지</Link>
+            <button onClick={() => signOut()} className="text-red-500 font-semibold">로그아웃</button>
+          </>
+        ) : (
+          <>
+            <button onClick={() => router.push("/login")} className="text-blue-700 underline">로그인</button>
+            <button onClick={() => router.push("/signup")} className="text-green-700 underline">회원가입</button>
+          </>
+        )}
+      </div>
+
+      <h1 className="text-4xl font-bold text-center mb-10 text-pink-700">동화 카테고리를 선택하세요</h1>
+
+      <div className="flex flex-wrap justify-center gap-4">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => handleCategoryClick(cat)}
+            className="px-6 py-3 bg-gradient-to-r from-yellow-100 to-pink-100 text-lg rounded-3xl shadow-lg hover:scale-110 transition-all duration-300 border border-yellow-300"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            {cat}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
