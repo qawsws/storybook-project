@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
-    "baseUrl": "./frontend",
+    "target": "ES2017",
+    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "allowJs": true,
     "skipLibCheck": true,
@@ -28,7 +27,5 @@
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
